@@ -1,9 +1,9 @@
 <?php
-session_start();
-if (!isset($_SESSION["role"]) || $_SESSION["role"] === 0) {
-    header("location:login.php");
-    exit();
-}
+ session_start();
+// if (isset($_SESSION["role"]) && $_SESSION["role"] === 0) {
+//     header("location:login.php");
+//     exit();
+// }
 include("reg.php");
 include("db.php");
 
@@ -15,11 +15,8 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $currentPage = 1;
 }
 
-
-$startFrom = ($currentPage - 1) * $perPage;
-
-
-$query = "SELECT * FROM person_details LIMIT $startFrom, $perPage";
+$start = ($currentPage - 1) * $perPage;
+$query = "SELECT * FROM person_details LIMIT $start, $perPage";
 $data = mysqli_query($conn, $query);
 
 
@@ -64,19 +61,16 @@ if ($total != 0) {
         <th>Country</th>
         <th>state</th>
         <th>city</th>
-        <th>role</th>
-       
+        <th>role</th>     
         <th>Location</th>
         <th>Edit/Delete</th>
 
         <?php
-       while ($result = mysqli_fetch_assoc($data)) {
+        while ($result = mysqli_fetch_assoc($data)) {
         $country = isset($country_data[$result['country']]) ? $country_data[$result['country']] : '';
         $state = isset($state_data[$result['state']]) ? $state_data[$result['state']] : '';
         $city = isset($city_data[$result['city']]) ? $city_data[$result['city']] : '';
-    
-
-           
+              
             echo "<tr>
             <td>" . $result['id'] . "</td>
             <td>" . $result['firstname'] . "</td>
@@ -91,17 +85,14 @@ if ($total != 0) {
             <td>".$city."</td>
             <td>" . $result['role'] . "</td>
             <td>" . $result['location'] . "</td>
-
             <td>
-                <a href='modify.php?id=$result[id] & firstname=$result[firstname] & lastname=$result[lastname] & email=$result[email] & password=$result[password] & gender=$result[gender] & native=$result[native] & skills=$result[skills] &country=$country &state=$state &city=$city &role=$result[role] & location=$result[location]'>Edit</a>
+                <a href='edit.php?id=$result[id] & firstname=$result[firstname] & lastname=$result[lastname] & email=$result[email] & password=$result[password] & gender=$result[gender] & native=$result[native] & skills=$result[skills] &country=$country &state=$state &city=$city &role=$result[role] & location=$result[location]'>Edit</a>
                 <a href='delete.php?id=$result[id]'>Delete</a>
             </td>
-
             </tr>";
         }
         ?>
-    </table>
-   
+    </table>  
     <a href="login.php">LOGIN</a>
     <a href="logout.php">LOGOUT</a>
     <?php
@@ -118,4 +109,3 @@ if ($total != 0) {
     echo "No records";
 }
 ?>
-<!--  <td><img src='data:image/*;base64," . base64_encode($result['image']) . "' alt='Image' style='max-width: 100px; max-height: 100px;'></td> -->

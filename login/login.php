@@ -17,17 +17,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         die("Invalid email format");
     }
 
-    $query = "SELECT *,role FROM person_details WHERE email=?";
+    $query = "SELECT *,role,password FROM person_details WHERE email=?";
     $stmt = mysqli_prepare($conn, $query);
     mysqli_stmt_bind_param($stmt, "s", $email);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
+    
 
     if ($result && mysqli_num_rows($result) > 0) {
         $row = mysqli_fetch_assoc($result);
+        $hashedPassword = $row['password'];
 
         if (password_verify($password, $row['password'])) {
-            // echo "Password is valid<br>";
             $_SESSION["role"] = $row['role'];
             $_SESSION["id"] = $row['id'];
 
@@ -38,12 +39,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
 
             exit();
-        } else {
-          //  echo "Invalid password";
-        }
-    } else {
-      //  echo "Invalid email or password";
-    }
+        } 
+    } 
 }
 ?>
 
@@ -91,11 +88,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             });
         });
     </script>
-     <script>
+    
         <script>
         $(document).ready(function(){
             $("#password").keyup(function(e){
-                var email = $("#password").val();
+                var password = $("#password").val();
 
                 $.ajax({
                     type: "POST",
@@ -114,7 +111,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $('#formvalidation').submit(function(e){
                 e.preventDefault();
                 
-                var email = $('#password').val();
+                var password = $('#password').val();
 
                 $.ajax({
                     type: 'POST',
@@ -126,13 +123,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             $('#formvalidation').unbind('submit').submit();
                         } else {
                             $('#password-error').html('password does not exist');
+                          //  $('#password-error').show('password does not exist');
                         }
                     }
                 });
             });
         });
     </script>
-     </script>
+     
 </head>
 <body>
     <div class="class">
@@ -151,8 +149,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="password">Password:</label>
                 <input type="password" name="password" required><br>
                 <span id="password-error" style="color: red;"></span><br>
-                <span id="password-message" style="color:red"></span>
-                
+                <span id="password-message" style="color:red"></span>                
             </div>
         
             <div class="input">

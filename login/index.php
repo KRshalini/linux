@@ -15,7 +15,7 @@ if (isset($_SESSION["role"]) && $_SESSION["role"] == 0) {
         $countryResult = mysqli_query($con, $countryQuery);
         $country = ($countryResult && mysqli_num_rows($countryResult) > 0) ? mysqli_fetch_assoc($countryResult)['name'] : '';
 
-       //state
+        //state
         $stateQuery = "SELECT state FROM state WHERE id = " . $details['state'];
         $stateResult = mysqli_query($con, $stateQuery);
         $state = ($stateResult && mysqli_num_rows($stateResult) > 0) ? mysqli_fetch_assoc($stateResult)['state'] : '';
@@ -54,7 +54,6 @@ if (isset($_SESSION["role"]) && $_SESSION["role"] == 0) {
         <p><b>State:</b> <?php echo $state; ?></p>
         <p><b>City:</b> <?php echo $city; ?></p>
         <p><b>Location:</b> <?php echo $details['location']; ?></p>
-
     <?php endif; ?>
 
     <a href="logout.php">Logout</a>
